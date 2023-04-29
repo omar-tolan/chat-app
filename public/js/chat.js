@@ -4,8 +4,10 @@ const socket = io()
 $form = document.querySelector('#message-form')
 $formInput = $form.elements.input
 $formButton = $form.elements.submitBtn
-
+$messagesContainer = document.querySelector("#messages")
 $locationButton = document.querySelector("#locationBtn")
+
+messagesTemplate = document.querySelector('#messages-template').innerHTML
 
 $form.addEventListener("submit", (e) => {
     e.preventDefault()
@@ -38,6 +40,7 @@ $locationButton.addEventListener('click', (e) => {
     })
 })
 
-socket.on("message", (msg) => {
-    console.log(msg)
+socket.on("message", (message) => {
+    const html = Mustache.render(messagesTemplate, {message})
+    $messagesContainer.insertAdjacentHTML('beforeend', html)
 })
