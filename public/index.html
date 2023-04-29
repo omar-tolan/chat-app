@@ -14,12 +14,12 @@
     </form>
     <script id="messages-template" type="text/html">
         <div>
-            <p>{{message}}</p>
+            <p>{{text}} - {{createdAt}}</p>
         </div>
     </script>
     <script id="location-template" type="text/html">
         <div>
-            <a target="_blank" href={{url}}>Open location in Google maps</a>
+            <p><a target="_blank" href={{url}}>Open location in google maps</a> - {{createdAt}}</p>
         </div>
     </script>
     <button id="locationBtn">Send Location</button>
