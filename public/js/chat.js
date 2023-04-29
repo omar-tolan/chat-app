@@ -8,6 +8,7 @@ $messagesContainer = document.querySelector("#messages")
 $locationButton = document.querySelector("#locationBtn")
 
 messagesTemplate = document.querySelector('#messages-template').innerHTML
+locationTemplate = document.querySelector('#location-template').innerHTML
 
 $form.addEventListener("submit", (e) => {
     e.preventDefault()
@@ -42,5 +43,10 @@ $locationButton.addEventListener('click', (e) => {
 
 socket.on("message", (message) => {
     const html = Mustache.render(messagesTemplate, {message})
+    $messagesContainer.insertAdjacentHTML('beforeend', html)
+})
+
+socket.on("sentLocation", (url) => {
+    const html = Mustache.render(locationTemplate, {url})
     $messagesContainer.insertAdjacentHTML('beforeend', html)
 })
