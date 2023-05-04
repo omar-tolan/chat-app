@@ -6,9 +6,11 @@ $formInput = $form.elements.input
 $formButton = $form.elements.submitBtn
 $messagesContainer = document.querySelector("#messages")
 $locationButton = document.querySelector("#locationBtn")
+$sideBar = document.querySelector("#sidebar")
 
 messagesTemplate = document.querySelector('#messages-template').innerHTML
 locationTemplate = document.querySelector('#location-template').innerHTML
+sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
 const {username, room} = Qs.parse(location.search, {ignoreQueryPrefix: true})
 
@@ -58,6 +60,14 @@ socket.on("sentLocation", (locationUrl) => {
         createdAt: moment(locationUrl.createdAt).format("h:mm a")
     })
     $messagesContainer.insertAdjacentHTML('beforeend', html)
+})
+
+socket.on('usersList', (roomInfo) => {
+    const html = Mustache.render(sidebarTemplate, {
+        room: roomInfo.room,
+        users: roomInfo.users
+    })
+    $sideBar.innerHTML = html
 })
 socket.emit("join", { username, room }, (error) => {
     if(error){
