@@ -10,6 +10,8 @@ $locationButton = document.querySelector("#locationBtn")
 messagesTemplate = document.querySelector('#messages-template').innerHTML
 locationTemplate = document.querySelector('#location-template').innerHTML
 
+const {username, room} = Qs.parse(location.search, {ignoreQueryPrefix: true})
+
 $form.addEventListener("submit", (e) => {
     e.preventDefault()
     $formButton.setAttribute('disabled', 'disabled')
@@ -18,7 +20,7 @@ $form.addEventListener("submit", (e) => {
         $formButton.removeAttribute('disabled')
         $formInput.value = ''
         $formInput.focus()
-        if(error){
+        if (error) {
             return console.log(error)
         }
         console.log('Delivered')
@@ -27,9 +29,9 @@ $form.addEventListener("submit", (e) => {
 
 $locationButton.addEventListener('click', (e) => {
     e.target.setAttribute('disabled', 'disabled')
-    if(!navigator.geolocation){
+    if (!navigator.geolocation) {
         alert('Location Services not supported!')
-    }  
+    }
     navigator.geolocation.getCurrentPosition((position) => {
         socket.emit("location", {
             latitude: position.coords.latitude,
@@ -43,6 +45,7 @@ $locationButton.addEventListener('click', (e) => {
 
 socket.on("message", (message) => {
     const html = Mustache.render(messagesTemplate, {
+        sender: message.sender,
         text: message.text,
         createdAt: moment(message.createdAt).format('h:mm a')
     })
@@ -55,4 +58,10 @@ socket.on("sentLocation", (locationUrl) => {
         createdAt: moment(locationUrl.createdAt).format("h:mm a")
     })
     $messagesContainer.insertAdjacentHTML('beforeend', html)
+})
+socket.emit("join", { username, room }, (error) => {
+    if(error){
+        alert(error)
+        location.href = '/'
+    }
 })

@@ -1,5 +1,6 @@
-exports.generateMessage = (message) => {
+exports.generateMessage = (message, username) => {
     return {
+        sender: username,
         text: message,
         createdAt: new Date().getTime()
     }
