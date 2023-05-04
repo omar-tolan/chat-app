@@ -12,6 +12,22 @@ messagesTemplate = document.querySelector('#messages-template').innerHTML
 locationTemplate = document.querySelector('#location-template').innerHTML
 sidebarTemplate = document.querySelector('#sidebar-template').innerHTML
 
+const autoScroll = () => {
+    const $newMessage = $messagesContainer.lastElementChild
+    const newMessageStyles = getComputedStyle($newMessage)
+    const newMessageMargin = parseInt(newMessageStyles.marginBottom)
+    const newMessageHeight = $newMessage.offsetHeight + newMessageMargin
+    const visisbleHeight = $messagesContainer.offsetHeight
+    const containerHeight = $messagesContainer.scrollHeight
+    const scrollOffset = $messagesContainer.scrollTop + visisbleHeight
+
+    if((containerHeight - newMessageHeight) <= scrollOffset) {
+        $messagesContainer.scrollTop = $messagesContainer.scrollHeight
+    }
+
+
+}
+
 const {username, room} = Qs.parse(location.search, {ignoreQueryPrefix: true})
 
 $form.addEventListener("submit", (e) => {
@@ -52,6 +68,7 @@ socket.on("message", (message) => {
         createdAt: moment(message.createdAt).format('h:mm a')
     })
     $messagesContainer.insertAdjacentHTML('beforeend', html)
+    autoScroll()
 })
 
 socket.on("sentLocation", (locationUrl) => {
@@ -60,6 +77,7 @@ socket.on("sentLocation", (locationUrl) => {
         createdAt: moment(locationUrl.createdAt).format("h:mm a")
     })
     $messagesContainer.insertAdjacentHTML('beforeend', html)
+    autoScroll()
 })
 
 socket.on('usersList', (roomInfo) => {
